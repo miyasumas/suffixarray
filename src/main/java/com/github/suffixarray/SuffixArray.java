@@ -1,10 +1,8 @@
 package com.github.suffixarray;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import com.github.suffixarray.SuffixArray.Suffix;
 
 /**
  * SuffixArray
@@ -13,81 +11,78 @@ import com.github.suffixarray.SuffixArray.Suffix;
  * @version $Rev$ $Date:: $
  * @since 2012/05/08
  */
-public class SuffixArray implements Iterable<Suffix> {
+public class SuffixArray {
 
 	/**
 	 * suffix配列
 	 */
-	private List<Suffix> suffixes = new ArrayList<Suffix>();
+	private String[] suffixes;
+
+	/**
+	 * インデックス
+	 */
+	private int[] indexes;
 
 	/**
 	 * コンストラクタ
 	 * @param text 文字列
 	 */
 	public SuffixArray(String text) {
-		for (int i = 0; i < text.length(); i++) {
-			suffixes.add(new Suffix(text.substring(i), i + 1));
+		int textLength = text.length();
+
+		suffixes = new String[textLength];
+		for (int i = 0; i < textLength; i++) {
+			suffixes[i] = text.substring(i);
 		}
-		Collections.sort(suffixes);
+		Arrays.sort(suffixes);
+
+		indexes = new int[textLength];
+		for (int i = 0; i < textLength; i++) {
+			indexes[i] = textLength - suffixes[i].length() + 1;
+		}
 	}
 
 	/**
 	 * リストとしてSuffixを取得します。
 	 * @return Suffixリスト
 	 */
-	public List<Suffix> asList() {
-		return suffixes;
+	public List<String> asList() {
+		return Arrays.asList(suffixes);
 	}
 
 	/**
 	 * 検索します。
 	 * 
 	 * @param keyword キーワード
-	 * @return Suffix
+	 * @return インデックス
 	 */
-	public List<Suffix> search(String keyword) {
-		int index = binarySearch(keyword);
-		List<Suffix> result = new ArrayList<Suffix>();
-		return result;
-	}
-
-	/**
-	 * Suffix配列に対して2分木探索をします。
-	 * 
-	 * @param keyword キーワード
-	 * @return 対象Suffix
-	 */
-	private int binarySearch(String keyword) {
-		int low = 0;
-		int high = suffixes.size() - 1;
-
-		int mid = -1;
-		while (low <= high) {
-			mid = (low + high) / 2;
-			Suffix midVal = suffixes.get(mid);
-			if (midVal.value.startsWith(keyword)) {
-				return mid;
+	public int[] search(String keyword) {
+		int elemNo = Arrays.binarySearch(suffixes, keyword, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				if (o1.startsWith(o2)) {
+					return 0;
+				}
+				return o1.compareTo(o2);
 			}
+		});
 
-			int cmp = midVal.value.compareTo(keyword);
-			if (cmp < 0) {
-				low = mid + 1;
-			} else if (cmp > 0) {
-				high = mid - 1;
-			} else {
-				return mid;
+		int from = elemNo;
+		for (int i = elemNo; i <= 0; i--) {
+			if (!suffixes[i].startsWith(keyword)) {
+				break;
+			}
+			from = i;
+		}
+		int to = elemNo;
+		for (int i = elemNo; i < suffixes.length; i++) {
+			to = i;
+			if (!suffixes[i].startsWith(keyword)) {
+				break;
 			}
 		}
-		return -(low + 1);
-	}
 
-	/** 
-	 * {@inheritDoc}
-	 * @see java.lang.Iterable#iterator()
-	 */
-	@Override
-	public Iterator<Suffix> iterator() {
-		return suffixes.iterator();
+		return Arrays.copyOfRange(indexes, from, to);
 	}
 
 	/** 
@@ -96,63 +91,63 @@ public class SuffixArray implements Iterable<Suffix> {
 	 */
 	@Override
 	public String toString() {
-		return String.format("SuffixArray [suffixes=%s]", suffixes);
+		return String.format("SuffixArray [suffixes=%s, indexes=%s]", Arrays.toString(suffixes), Arrays.toString(indexes));
 	}
 
-	/**
-	 * Suffix
-	 * 
-	 * @author Last changed by:$Author$
-	 * @version $Rev$ $Date::                     $
-	 * @since 2012/06/05
-	 */
-	public static class Suffix implements Comparable<Suffix> {
-
-		/**
-		 * 値
-		 */
-		private String value;
-
-		/**
-		 * インデックス
-		 */
-		private int index;
-
-		/**
-		 * コンストラクタ
-		 * @param value 値
-		 * @param index インデックス
-		 */
-		public Suffix(String value, int index) {
-			super();
-			this.value = value;
-			this.index = index;
-		}
-
-		/**
-		 * indexを取得します。
-		 * @return index
-		 */
-		public int getIndex() {
-			return index;
-		}
-
-		/** 
-		 * {@inheritDoc}
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return value;
-		}
-
-		/** 
-		 * {@inheritDoc}
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 */
-		@Override
-		public int compareTo(Suffix o) {
-			return value.compareTo(o.value);
-		}
-	}
+//	/**
+//	 * Suffix
+//	 * 
+//	 * @author Last changed by:$Author$
+//	 * @version $Rev$ $Date::                     $
+//	 * @since 2012/06/05
+//	 */
+//	public static class Suffix implements Comparable<Suffix> {
+//
+//		/**
+//		 * 値
+//		 */
+//		private String value;
+//
+//		/**
+//		 * インデックス
+//		 */
+//		private int index;
+//
+//		/**
+//		 * コンストラクタ
+//		 * @param value 値
+//		 * @param index インデックス
+//		 */
+//		public Suffix(String value, int index) {
+//			super();
+//			this.value = value;
+//			this.index = index;
+//		}
+//
+//		/**
+//		 * indexを取得します。
+//		 * @return index
+//		 */
+//		public int getIndex() {
+//			return index;
+//		}
+//
+//		/** 
+//		 * {@inheritDoc}
+//		 * @see java.lang.Object#toString()
+//		 */
+//		@Override
+//		public String toString() {
+//			return value;
+//		}
+//
+//		/** 
+//		 * {@inheritDoc}
+//		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+//		 */
+//		@Override
+//		public int compareTo(Suffix o) {
+//			return value.compareTo(o.value);
+//		}
+//	}
 }

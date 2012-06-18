@@ -1,9 +1,9 @@
 package com.github.suffixarray;
 
 import static org.junit.Assert.*;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
-import com.github.suffixarray.SuffixArray.Suffix;
 
 /**
  * {@link com.github.suffixarray.SuffixArray}のテストケース
@@ -15,12 +15,23 @@ import com.github.suffixarray.SuffixArray.Suffix;
 public class SuffixArrayTest {
 
 	@Test
-	public void iterator() {
+	public void list() {
 		SuffixArray suffixarray = new SuffixArray("cba");
-		Iterator<Suffix> iterator = suffixarray.iterator();
-		assertEquals("a", iterator.next().toString());
-		assertEquals("ba", iterator.next().toString());
-		assertEquals("cba", iterator.next().toString());
+		List<String> list = suffixarray.asList();
+		assertEquals(3, list.size());
+		assertEquals("a", list.get(0));
+		assertEquals("ba", list.get(1));
+		assertEquals("cba", list.get(2));
 	}
 
+	@Test
+	public void search() {
+		SuffixArray suffixarray = new SuffixArray("abccbaabc");
+		System.out.println(suffixarray);
+		int[] result = suffixarray.search("bc");
+		System.out.println(Arrays.toString(result));
+		assertEquals(2, result.length);
+		assertEquals(8, result[0]);
+		assertEquals(2, result[1]);
+	}
 }
