@@ -5,7 +5,14 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ページ
@@ -22,14 +29,59 @@ public class Page {
 	private URL url;
 
 	/**
+	 * 内容
+	 */
+	private String content;
+
+	/**
+	 * リンク
+	 */
+	private Set<URL> links;
+
+	/**
 	 * コンストラクタ
 	 * @param url URL
+	 * @throws IOException コンテンツを取得できなかった場合
+	 * @throws URISyntaxException URIが正しくない場合
 	 */
-	public Page(URL url) {
+	public Page(URL url) throws IOException, URISyntaxException {
 		this.url = url;
+		this.content = readContent(url);
+		this.links = parseLinks(url, content);
 	}
 
-	public String getContentAsString() throws IOException {
+	/**
+	 * urlを取得します。
+	 * @return url
+	 */
+	public URL getUrl() {
+		return url;
+	}
+
+	/**
+	 * contentを取得します。
+	 * @return content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * linksを取得します。
+	 * @return links
+	 */
+	public Set<URL> getLinks() {
+		return links;
+	}
+
+	/**
+	 * コンテンツを読み込みます。
+	 * 
+	 * @param url URL
+	 * @return コンテンツ
+	 * @throws IOException コンテンツを取得できなかった場合
+	 */
+	private String readContent(URL url) throws IOException {
 		StringWriter text = new StringWriter();
 		BufferedReader reader = null;
 		BufferedWriter writer = null;
@@ -56,6 +108,13 @@ public class Page {
 		return text.toString();
 	}
 
+	/**
+	 * コピーします。
+	 * 
+	 * @param reader リーダー
+	 * @param writer ライター
+	 * @throws IOException コピーに失敗した場合
+	 */
 	private void copy(BufferedReader reader, BufferedWriter writer) throws IOException {
 		String line = null;
 		while ((line = reader.readLine()) != null) {
@@ -63,6 +122,30 @@ public class Page {
 			writer.newLine();
 		}
 		writer.flush();
+	}
+
+	/**
+	 * リンクを解析します。
+	 * 
+	 * @param url URL
+	 * @param content コンテンツ
+	 * @return リンク
+	 * @throws MalformedURLException URLが正しく生成できなかった場合
+	 * @throws URISyntaxException URIが正しくない場合
+	 */
+	private Set<URL> parseLinks(URL url, String content) throws MalformedURLException, URISyntaxException {
+		Set<URL> links = new HashSet<URL>();
+		Pattern pattern = Pattern.compile("<a [^\\w]*href=\"([^\"]+)\"[^>]*>");
+		Matcher matcher = pattern.matcher(content);
+		while (matcher.find()) {
+			String href = matcher.group(1).trim();
+			if (href.startsWith("mailto:")) {
+				continue;
+			}
+			URI link = url.toURI().resolve(href).normalize();
+			links.add(link.toURL());
+		}
+		return links;
 	}
 
 	/** 

@@ -44,7 +44,7 @@ public class SearchEngine {
 		char delim = '\0';
 		for (Page page : pages) {
 			builder.append(delim);
-			String content = page.getContentAsString();
+			String content = page.getContent();
 			builder.append(content);
 			this.pages.put(page, content.length());
 			delim = '\0';
