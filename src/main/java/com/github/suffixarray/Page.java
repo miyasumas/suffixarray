@@ -67,6 +67,16 @@ public class Page {
 	}
 
 	/**
+	 * コンテンツ長を取得します。
+	 * TODO コンテンツ長と言いながら文字数なのでわかりづらい
+	 * 
+	 * @return コンテンツ長(文字数)
+	 */
+	public int getContentLength() {
+		return content.length();
+	}
+
+	/**
 	 * linksを取得します。
 	 * @return links
 	 */

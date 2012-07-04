@@ -17,11 +17,6 @@ import java.util.Set;
 public class Closure {
 
 	/**
-	 * 同一ホスト内のみ
-	 */
-	private boolean onlySameHost = true;
-
-	/**
 	 * ページ
 	 */
 	private Set<Page> pages;
@@ -64,7 +59,7 @@ public class Closure {
 			if (onlySameHost && !link.getHost().equals(base.getHost())) {
 				continue;
 			}
-			
+
 			pages.addAll(resolve(link, onlySameHost));
 		}
 		return pages;
