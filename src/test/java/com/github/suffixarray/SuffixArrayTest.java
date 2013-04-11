@@ -3,10 +3,13 @@ package com.github.suffixarray;
 import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
+
+import miyasum.suffixarray.SuffixArray;
+
 import org.junit.Test;
 
 /**
- * {@link com.github.suffixarray.SuffixArray}のテストケース
+ * {@link miyasum.suffixarray.SuffixArray}のテストケース
  * 
  * @author Last changed by:$Author$
  * @version $Rev$ $Date::                     $

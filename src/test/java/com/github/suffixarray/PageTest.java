@@ -2,10 +2,13 @@ package com.github.suffixarray;
 
 import static org.junit.Assert.*;
 import java.net.URL;
+
+import miyasum.suffixarray.Page;
+
 import org.junit.Test;
 
 /**
- * {@link com.github.suffixarray.Page}のテストケース
+ * {@link miyasum.suffixarray.Page}のテストケース
  * 
  * @author Last changed by:$Author$
  * @version $Rev$ $Date::                     $

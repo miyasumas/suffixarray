@@ -3,10 +3,14 @@ package com.github.suffixarray;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.net.URL;
+
+import miyasum.suffixarray.Page;
+import miyasum.suffixarray.SearchEngine;
+
 import org.junit.Test;
 
 /**
- * {@link com.github.suffixarray.SearchEngine}のテストケース
+ * {@link miyasum.suffixarray.SearchEngine}のテストケース
  * 
  * @author Last changed by:$Author$
  * @version $Rev$ $Date::                     $

@@ -1,4 +1,4 @@
-package com.github.suffixarray;
+package miyasum.suffixarray;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

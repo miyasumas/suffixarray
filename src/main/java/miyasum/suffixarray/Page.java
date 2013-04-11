@@ -1,4 +1,4 @@
-package com.github.suffixarray;
+package miyasum.suffixarray;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

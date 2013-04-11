@@ -4,10 +4,14 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import miyasum.suffixarray.Closure;
+import miyasum.suffixarray.Page;
+
 import org.junit.Test;
 
 /**
- * {@link com.github.suffixarray.Closure}のテストケース
+ * {@link miyasum.suffixarray.Closure}のテストケース
  * 
  * @author Last changed by:$Author$
  * @version $Rev$ $Date::                     $
